@@ -412,6 +412,84 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#library-level-benchmark-go-api-vs-runtimes-2026-07-03" class="md-nav__link">
+    <span class="md-ellipsis">
+      Library-level benchmark (Go API vs runtimes) — 2026-07-03
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Library-level benchmark (Go API vs runtimes) — 2026-07-03">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add" class="md-nav__link">
+    <span class="md-ellipsis">
+      add
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mul" class="md-nav__link">
+    <span class="md-ellipsis">
+      mul
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#div" class="md-nav__link">
+    <span class="md-ellipsis">
+      div
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#from-decimal" class="md-nav__link">
+    <span class="md-ellipsis">
+      from-decimal
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#to_s" class="md-nav__link">
+    <span class="md-ellipsis">
+      to_s
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reduce" class="md-nav__link">
+    <span class="md-ellipsis">
+      reduce
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cmp" class="md-nav__link">
+    <span class="md-ellipsis">
+      cmp
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -484,6 +562,84 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#library-level-benchmark-go-api-vs-runtimes-2026-07-03" class="md-nav__link">
+    <span class="md-ellipsis">
+      Library-level benchmark (Go API vs runtimes) — 2026-07-03
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Library-level benchmark (Go API vs runtimes) — 2026-07-03">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#add" class="md-nav__link">
+    <span class="md-ellipsis">
+      add
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mul" class="md-nav__link">
+    <span class="md-ellipsis">
+      mul
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#div" class="md-nav__link">
+    <span class="md-ellipsis">
+      div
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#from-decimal" class="md-nav__link">
+    <span class="md-ellipsis">
+      from-decimal
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#to_s" class="md-nav__link">
+    <span class="md-ellipsis">
+      to_s
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reduce" class="md-nav__link">
+    <span class="md-ellipsis">
+      reduce
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cmp" class="md-nav__link">
+    <span class="md-ellipsis">
+      cmp
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -532,6 +688,325 @@ the relative noise is high — treat any ratio that completes in well under ~200
 order-of-magnitude. Numbers will be added here only once they are real, measured on a
 pinned host, and reproducible from the committed harness — nothing is estimated or
 cherry-picked.</p>
+</div>
+<h2 id="library-level-benchmark-go-api-vs-runtimes-2026-07-03">Library-level benchmark (Go API vs runtimes) — 2026-07-03<a class="headerlink" href="#library-level-benchmark-go-api-vs-runtimes-2026-07-03" title="Permanent link">&para;</a></h2>
+<p>This section measures the <strong>pure-Go library directly, through its Go API</strong> — not
+the <code>rbgo</code> interpreter path described above. It isolates the library primitive
+from Ruby-interpreter dispatch, answering the parity question head-on: <em>is the
+pure-Go implementation as fast as the reference runtime's own <code>Rational</code>?</em> The
+<strong>same workload, same inputs, same iteration counts</strong> run through the Go library
+and through each reference runtime's core <code>Rational</code>; outputs were checked
+identical to MRI (canonical <code>Rational#to_s</code>) before any timing.</p>
+<ul>
+<li><strong>Host:</strong> Apple M4 Max (<code>Mac16,5</code>, arm64), macOS 26.5.1 — <strong>date 2026-07-03</strong>.</li>
+<li><strong>Runtimes:</strong> Go 1.26.4 · MRI <code>ruby 4.0.5 +PRISM</code> · MRI + YJIT · JRuby 10.1.0.0
+  (OpenJDK 25) · TruffleRuby 34.0.1 (GraalVM CE Native).</li>
+<li><strong>Method:</strong> each process runs 3 untimed warm-up passes, then 25 timed passes of
+  a fixed inner loop, timed with a monotonic clock; the <strong>best</strong> pass is reported
+  as <strong>ns/op</strong> (lower is better). <code>vs MRI</code> &lt; 1.00× means <em>faster than MRI</em>.
+  Interpreter start-up is outside the timed region, so these are operation costs,
+  not <code>ruby file.rb</code> process costs.</li>
+<li><strong>Operands:</strong> large, non-trivially-reducible values (e.g. <code>Rational(1234567890123,
+  9876543210)</code>) so GCD normalisation is real work; <code>from-decimal</code> is the
+  <code>Rational(String)</code> conversion (<code>"3.14159"</code>), <code>reduce</code> is a fresh
+  <code>Rational(12345678901234567890, 9876543210987654321)</code> construction.</li>
+</ul>
+<h4 id="add">add<a class="headerlink" href="#add" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Runtime</th>
+<th style="text-align: right;">ns/op</th>
+<th style="text-align: right;">vs MRI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>go-ruby (pure Go)</strong></td>
+<td style="text-align: right;">161.5</td>
+<td style="text-align: right;">1.58×</td>
+</tr>
+<tr>
+<td>MRI</td>
+<td style="text-align: right;">102.0</td>
+<td style="text-align: right;">1.00×</td>
+</tr>
+<tr>
+<td>MRI + YJIT</td>
+<td style="text-align: right;">83.0</td>
+<td style="text-align: right;">0.81×</td>
+</tr>
+<tr>
+<td>JRuby</td>
+<td style="text-align: right;">197.0</td>
+<td style="text-align: right;">1.93×</td>
+</tr>
+<tr>
+<td>TruffleRuby</td>
+<td style="text-align: right;">565.5</td>
+<td style="text-align: right;">5.54×</td>
+</tr>
+</tbody>
+</table>
+<h4 id="mul">mul<a class="headerlink" href="#mul" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Runtime</th>
+<th style="text-align: right;">ns/op</th>
+<th style="text-align: right;">vs MRI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>go-ruby (pure Go)</strong></td>
+<td style="text-align: right;">163.0</td>
+<td style="text-align: right;">1.83×</td>
+</tr>
+<tr>
+<td>MRI</td>
+<td style="text-align: right;">89.0</td>
+<td style="text-align: right;">1.00×</td>
+</tr>
+<tr>
+<td>MRI + YJIT</td>
+<td style="text-align: right;">59.0</td>
+<td style="text-align: right;">0.66×</td>
+</tr>
+<tr>
+<td>JRuby</td>
+<td style="text-align: right;">261.0</td>
+<td style="text-align: right;">2.93×</td>
+</tr>
+<tr>
+<td>TruffleRuby</td>
+<td style="text-align: right;">330.6</td>
+<td style="text-align: right;">3.71×</td>
+</tr>
+</tbody>
+</table>
+<h4 id="div">div<a class="headerlink" href="#div" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Runtime</th>
+<th style="text-align: right;">ns/op</th>
+<th style="text-align: right;">vs MRI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>go-ruby (pure Go)</strong></td>
+<td style="text-align: right;">167.8</td>
+<td style="text-align: right;">1.77×</td>
+</tr>
+<tr>
+<td>MRI</td>
+<td style="text-align: right;">95.0</td>
+<td style="text-align: right;">1.00×</td>
+</tr>
+<tr>
+<td>MRI + YJIT</td>
+<td style="text-align: right;">62.0</td>
+<td style="text-align: right;">0.65×</td>
+</tr>
+<tr>
+<td>JRuby</td>
+<td style="text-align: right;">88.9</td>
+<td style="text-align: right;">0.94×</td>
+</tr>
+<tr>
+<td>TruffleRuby</td>
+<td style="text-align: right;">331.3</td>
+<td style="text-align: right;">3.49×</td>
+</tr>
+</tbody>
+</table>
+<h4 id="from-decimal">from-decimal<a class="headerlink" href="#from-decimal" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Runtime</th>
+<th style="text-align: right;">ns/op</th>
+<th style="text-align: right;">vs MRI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>go-ruby (pure Go)</strong></td>
+<td style="text-align: right;">207.5</td>
+<td style="text-align: right;">2.01×</td>
+</tr>
+<tr>
+<td>MRI</td>
+<td style="text-align: right;">103.0</td>
+<td style="text-align: right;">1.00×</td>
+</tr>
+<tr>
+<td>MRI + YJIT</td>
+<td style="text-align: right;">78.0</td>
+<td style="text-align: right;">0.76×</td>
+</tr>
+<tr>
+<td>JRuby</td>
+<td style="text-align: right;">597.8</td>
+<td style="text-align: right;">5.80×</td>
+</tr>
+<tr>
+<td>TruffleRuby</td>
+<td style="text-align: right;">2984.2</td>
+<td style="text-align: right;">28.97×</td>
+</tr>
+</tbody>
+</table>
+<h4 id="to_s">to_s<a class="headerlink" href="#to_s" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Runtime</th>
+<th style="text-align: right;">ns/op</th>
+<th style="text-align: right;">vs MRI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>go-ruby (pure Go)</strong></td>
+<td style="text-align: right;">93.8</td>
+<td style="text-align: right;">0.96×</td>
+</tr>
+<tr>
+<td>MRI</td>
+<td style="text-align: right;">98.0</td>
+<td style="text-align: right;">1.00×</td>
+</tr>
+<tr>
+<td>MRI + YJIT</td>
+<td style="text-align: right;">72.0</td>
+<td style="text-align: right;">0.73×</td>
+</tr>
+<tr>
+<td>JRuby</td>
+<td style="text-align: right;">222.7</td>
+<td style="text-align: right;">2.27×</td>
+</tr>
+<tr>
+<td>TruffleRuby</td>
+<td style="text-align: right;">430.6</td>
+<td style="text-align: right;">4.39×</td>
+</tr>
+</tbody>
+</table>
+<h4 id="reduce">reduce<a class="headerlink" href="#reduce" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Runtime</th>
+<th style="text-align: right;">ns/op</th>
+<th style="text-align: right;">vs MRI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>go-ruby (pure Go)</strong></td>
+<td style="text-align: right;">98.1</td>
+<td style="text-align: right;">0.35×</td>
+</tr>
+<tr>
+<td>MRI</td>
+<td style="text-align: right;">279.0</td>
+<td style="text-align: right;">1.00×</td>
+</tr>
+<tr>
+<td>MRI + YJIT</td>
+<td style="text-align: right;">241.0</td>
+<td style="text-align: right;">0.86×</td>
+</tr>
+<tr>
+<td>JRuby</td>
+<td style="text-align: right;">445.1</td>
+<td style="text-align: right;">1.60×</td>
+</tr>
+<tr>
+<td>TruffleRuby</td>
+<td style="text-align: right;">928.1</td>
+<td style="text-align: right;">3.33×</td>
+</tr>
+</tbody>
+</table>
+<h4 id="cmp">cmp<a class="headerlink" href="#cmp" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Runtime</th>
+<th style="text-align: right;">ns/op</th>
+<th style="text-align: right;">vs MRI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>go-ruby (pure Go)</strong></td>
+<td style="text-align: right;">38.0</td>
+<td style="text-align: right;">0.93×</td>
+</tr>
+<tr>
+<td>MRI</td>
+<td style="text-align: right;">41.0</td>
+<td style="text-align: right;">1.00×</td>
+</tr>
+<tr>
+<td>MRI + YJIT</td>
+<td style="text-align: right;">24.0</td>
+<td style="text-align: right;">0.59×</td>
+</tr>
+<tr>
+<td>JRuby</td>
+<td style="text-align: right;">126.1</td>
+<td style="text-align: right;">3.08×</td>
+</tr>
+<tr>
+<td>TruffleRuby</td>
+<td style="text-align: right;">358.2</td>
+<td style="text-align: right;">8.74×</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Reading the numbers.</strong> Two regimes show up clearly. On <strong>GCD-heavy
+construction</strong> (<code>reduce</code>, big coprime-ish operands) the pure-Go <code>math/big</code> GCD
+<strong>beats MRI ~2.9×</strong> (0.35×) — this is the module's design workload, exact
+arbitrary-precision reduction, and it wins outright. <code>to_s</code> (0.96×) and <code>cmp</code>
+(0.93×) are <strong>at parity</strong> with MRI. On <strong>small-operand arithmetic</strong>
+(<code>add</code>/<code>mul</code>/<code>div</code>, ~1.6–1.8×) and <code>Rational(String)</code> parsing (<code>from-decimal</code>,
+2.01×) go-ruby trails MRI: MRI's <code>Rational</code> is a mature C extension whose fast
+path avoids heap traffic on small numerators, whereas each go-ruby op allocates
+a fresh <code>*big.Rat</code>; those per-op allocations are this module's clearest
+optimisation target (a small-value fast path / operand reuse). MRI + YJIT leads
+most short rows. The TruffleRuby columns on the shortest loops are <strong>cold-JIT
+outliers</strong> — most visibly <code>from-decimal</code> (28.97×) and <code>cmp</code> (8.74×) — where Graal
+had not compiled the loop within the warm-up budget; they are not steady-state
+figures. Every value is a real measured <code>ns/op</code> from the dated run above.</p>
+<div class="admonition note">
+<p class="admonition-title">Reproduce</p>
+<p>The harness is committed under
+<a href="https://github.com/go-ruby-rational/docs/tree/main/benchmarks"><code>benchmarks/</code></a>:
+a self-contained Go driver (<code>go/</code>, pins the published library by
+pseudo-version via <code>go.mod</code> — resolved through the Go module proxy, no
+<code>replace</code>), the equivalent <code>ruby/rational.rb</code> workload, and <code>run.sh</code>. Run
+<code>bash benchmarks/run.sh</code>; env <code>OUTER</code>/<code>WARM</code> tune the pass budget and
+<code>RUBY</code>/<code>JRUBY</code>/<code>TRUFFLERUBY</code> select the runtime binaries. <code>run.sh</code> verifies
+the Go output is byte-identical to MRI (canonical <code>Rational#to_s</code>) and aborts
+before timing on any mismatch.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warm-up budget &amp; noise — honest framing</p>
+<p>Numbers reflect a <strong>fixed warm-process budget</strong> (3 warm-up + 25 timed passes
+in one process). The JVM/GraalVM JITs (JRuby, TruffleRuby) may need a larger
+warm-up to reach steady state, so their columns can <strong>understate</strong> peak
+throughput — most visibly TruffleRuby on the shortest loops (the cold-JIT
+outliers noted above). Sub-microsecond rows carry the most relative noise;
+treat those ratios as order-of-magnitude. Every number here is a <strong>real
+measured value</strong> from the dated run above — nothing is fabricated, estimated,
+or cherry-picked. The go-ruby column is the pure-Go library; every other
+column is that interpreter's own core <code>Rational</code> doing the equivalent work.</p>
 </div>
 
 
