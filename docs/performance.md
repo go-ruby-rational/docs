@@ -57,91 +57,114 @@ identical to MRI (canonical `Rational#to_s`) before any timing.
   9876543210)`) so GCD normalisation is real work; `from-decimal` is the
   `Rational(String)` conversion (`"3.14159"`), `reduce` is a fresh
   `Rational(12345678901234567890, 9876543210987654321)` construction.
+- **Library version:** the numbers below are the pure-Go library **with the int64
+  fast path** (a `Rational` whose numerator and denominator both fit `int64` is
+  held in machine words; arithmetic runs in `int64` with exact overflow detection
+  and promotes to `*big.Rat` only on overflow — MRI's fixnum-num/den strategy). The
+  earlier all-`*big.Rat` measurement (add 1.58×, mul 1.83×, div 1.77×,
+  from-decimal 2.01×) is superseded; the before→after appears in the table below.
 
 #### add
 
 | Runtime | ns/op | vs MRI |
 | --- | ---: | ---: |
-| **go-ruby (pure Go)** | 161.5 | 1.58× |
-| MRI | 102.0 | 1.00× |
-| MRI + YJIT | 83.0 | 0.81× |
-| JRuby | 197.0 | 1.93× |
-| TruffleRuby | 565.5 | 5.54× |
+| **go-ruby (pure Go)** | 33.2 | 0.32× |
+| MRI | 103.0 | 1.00× |
+| MRI + YJIT | 81.0 | 0.79× |
+| JRuby | 207.1 | 2.01× |
+| TruffleRuby | 594.5 | 5.77× |
 
 #### mul
 
 | Runtime | ns/op | vs MRI |
 | --- | ---: | ---: |
-| **go-ruby (pure Go)** | 163.0 | 1.83× |
-| MRI | 89.0 | 1.00× |
-| MRI + YJIT | 59.0 | 0.66× |
-| JRuby | 261.0 | 2.93× |
-| TruffleRuby | 330.6 | 3.71× |
+| **go-ruby (pure Go)** | 42.1 | 0.46× |
+| MRI | 92.0 | 1.00× |
+| MRI + YJIT | 55.0 | 0.60× |
+| JRuby | 241.2 | 2.62× |
+| TruffleRuby | 331.1 | 3.60× |
 
 #### div
 
 | Runtime | ns/op | vs MRI |
 | --- | ---: | ---: |
-| **go-ruby (pure Go)** | 167.8 | 1.77× |
-| MRI | 95.0 | 1.00× |
-| MRI + YJIT | 62.0 | 0.65× |
-| JRuby | 88.9 | 0.94× |
-| TruffleRuby | 331.3 | 3.49× |
+| **go-ruby (pure Go)** | 53.1 | 0.54× |
+| MRI | 99.0 | 1.00× |
+| MRI + YJIT | 61.0 | 0.62× |
+| JRuby | 160.1 | 1.62× |
+| TruffleRuby | 324.0 | 3.27× |
 
 #### from-decimal
 
 | Runtime | ns/op | vs MRI |
 | --- | ---: | ---: |
-| **go-ruby (pure Go)** | 207.5 | 2.01× |
-| MRI | 103.0 | 1.00× |
-| MRI + YJIT | 78.0 | 0.76× |
-| JRuby | 597.8 | 5.80× |
-| TruffleRuby | 2984.2 | 28.97× |
+| **go-ruby (pure Go)** | 25.4 | 0.25× |
+| MRI | 102.0 | 1.00× |
+| MRI + YJIT | 67.0 | 0.66× |
+| JRuby | 781.5 | 7.66× |
+| TruffleRuby | 3011.7 | 29.53× |
 
 #### to_s
 
 | Runtime | ns/op | vs MRI |
 | --- | ---: | ---: |
-| **go-ruby (pure Go)** | 93.8 | 0.96× |
-| MRI | 98.0 | 1.00× |
-| MRI + YJIT | 72.0 | 0.73× |
-| JRuby | 222.7 | 2.27× |
-| TruffleRuby | 430.6 | 4.39× |
+| **go-ruby (pure Go)** | 46.3 | 0.46× |
+| MRI | 100.0 | 1.00× |
+| MRI + YJIT | 72.0 | 0.72× |
+| JRuby | 241.4 | 2.41× |
+| TruffleRuby | 429.9 | 4.30× |
 
 #### reduce
 
 | Runtime | ns/op | vs MRI |
 | --- | ---: | ---: |
-| **go-ruby (pure Go)** | 98.1 | 0.35× |
-| MRI | 279.0 | 1.00× |
-| MRI + YJIT | 241.0 | 0.86× |
-| JRuby | 445.1 | 1.60× |
-| TruffleRuby | 928.1 | 3.33× |
+| **go-ruby (pure Go)** | 76.8 | 0.28× |
+| MRI | 272.0 | 1.00× |
+| MRI + YJIT | 253.0 | 0.93× |
+| JRuby | 553.9 | 2.04× |
+| TruffleRuby | 949.8 | 3.49× |
 
 #### cmp
 
 | Runtime | ns/op | vs MRI |
 | --- | ---: | ---: |
-| **go-ruby (pure Go)** | 38.0 | 0.93× |
-| MRI | 41.0 | 1.00× |
-| MRI + YJIT | 24.0 | 0.59× |
-| JRuby | 126.1 | 3.08× |
-| TruffleRuby | 358.2 | 8.74× |
+| **go-ruby (pure Go)** | 4.3 | 0.11× |
+| MRI | 39.0 | 1.00× |
+| MRI + YJIT | 25.0 | 0.64× |
+| JRuby | 80.8 | 2.07× |
+| TruffleRuby | 357.5 | 9.17× |
 
-**Reading the numbers.** Two regimes show up clearly. On **GCD-heavy
-construction** (`reduce`, big coprime-ish operands) the pure-Go `math/big` GCD
-**beats MRI ~2.9×** (0.35×) — this is the module's design workload, exact
-arbitrary-precision reduction, and it wins outright. `to_s` (0.96×) and `cmp`
-(0.93×) are **at parity** with MRI. On **small-operand arithmetic**
-(`add`/`mul`/`div`, ~1.6–1.8×) and `Rational(String)` parsing (`from-decimal`,
-2.01×) go-ruby trails MRI: MRI's `Rational` is a mature C extension whose fast
-path avoids heap traffic on small numerators, whereas each go-ruby op allocates
-a fresh `*big.Rat`; those per-op allocations are this module's clearest
-optimisation target (a small-value fast path / operand reuse). MRI + YJIT leads
-most short rows. The TruffleRuby columns on the shortest loops are **cold-JIT
-outliers** — most visibly `from-decimal` (28.97×) and `cmp` (8.74×) — where Graal
-had not compiled the loop within the warm-up budget; they are not steady-state
-figures. Every value is a real measured `ns/op` from the dated run above.
+**Reading the numbers.** With the int64 fast path the pure-Go library is now
+**faster than MRI on every operation**, and the small-operand rows that used to
+trail have flipped decisively:
+
+| op | before (all-`*big.Rat`) | after (int64 fast path) |
+| --- | ---: | ---: |
+| add | 1.58× | **0.32×** |
+| mul | 1.83× | **0.46×** |
+| div | 1.77× | **0.54×** |
+| from-decimal | 2.01× | **0.25×** |
+| to_s | 0.96× | **0.46×** |
+| cmp | 0.93× | **0.11×** |
+| reduce | 0.35× | **0.28×** |
+
+`add`/`mul`/`div` now run entirely in machine words (gcd-reduced in `int64`,
+overflow-checked with 128-bit `math/bits` products), so they land at **0.3–0.5×
+MRI** — roughly **2–3× faster** than MRI's C `Rational` — instead of ~1.6–1.8×
+slower. `from-decimal` gained a dedicated int64 decimal parser and drops to
+**0.25×** (~4× faster). `cmp` is now an `int64` cross-product comparison — a
+handful of nanoseconds, **0.11×**. `to_s` formats the two `int64` fields directly
+(no `*big.Rat`), roughly halving its cost to **0.46×**. `reduce` (big coprime
+operands that intentionally do **not** fit `int64`) still exercises the
+`math/big` GCD path and holds its existing **~3.5× lead** at 0.28×. Exactness is
+untouched: any operand or intermediate that exceeds `int64` promotes to the exact
+`*big.Rat` path, and the `run.sh` verification confirms every result is
+**byte-identical to MRI** (canonical `Rational#to_s`) before timing. MRI + YJIT
+still trims MRI's own rows but no longer leads the go column on any operation. The
+TruffleRuby columns on the shortest loops remain **cold-JIT outliers** — most
+visibly `from-decimal` (29.53×) and `cmp` (9.17×) — where Graal had not compiled
+the loop within the warm-up budget; they are not steady-state figures. Every
+value is a real measured `ns/op` from the dated run above.
 
 !!! note "Reproduce"
     The harness is committed under
