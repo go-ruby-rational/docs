@@ -1,5 +1,5 @@
 module bench
 
-go 1.26.4
+go 1.27.1
 
-require github.com/go-ruby-rational/rational v0.0.0-20260717073030-5199d6c61f15
+require github.com/go-ruby-rational/rational v0.0.0-20261005011435-107a2e18070a
