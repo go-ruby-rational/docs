@@ -1,4 +1,9 @@
-# Performance
+---
+title: "Performance"
+weight: 50
+---
+
+# Performance {#performance}
 
 `go-ruby-rational/rational` is the pure-Go library that
 [`rbgo`](https://github.com/go-embedded-ruby/ruby) binds for Ruby's `Rational`. This page
@@ -7,7 +12,7 @@ reference Ruby runtimes — part of the ecosystem-wide per-module parity suite. 
 are quoted here until they are measured on a pinned host and committed to the benchmark
 harness.
 
-## What is measured
+## What is measured {#what-is-measured}
 
 The **same** Ruby script — a mix of exact `Rational` arithmetic, `inspect`/`to_s`,
 rounding and `Rational(String)` parsing over a representative corpus — is run under every
@@ -16,7 +21,7 @@ column is that interpreter's own `Rational`. So the comparison is the **Ruby-vis
 operation**, apples-to-apples across interpreters. The script prints a deterministic
 checksum and its output is checked **byte-identical to MRI** before any timing is taken.
 
-## Method
+## Method {#method}
 
 - **Best-of-N wall time** (best, not mean, to suppress scheduler noise); single-shot
   processes, no warm-up beyond the script's own loop.
@@ -27,15 +32,18 @@ checksum and its output is checked **byte-identical to MRI** before any timing i
   [`bench/modules/`](https://github.com/go-embedded-ruby/ruby/tree/main/bench/modules).
   Reproduce with `RBGO=./rbgo bash bench/modules/run.sh N`.
 
-!!! note "Honest framing"
-    Exact `Rational` arithmetic is dominated by big-integer GCD/reduction cost, so the
-    profile depends heavily on operand size; a small-operand round-trip completes fast and
-    the relative noise is high — treat any ratio that completes in well under ~200 ms as
-    order-of-magnitude. Numbers will be added here only once they are real, measured on a
-    pinned host, and reproducible from the committed harness — nothing is estimated or
-    cherry-picked.
+{{< callout type="info" >}}
+**Honest framing**
 
-## Library-level benchmark (Go API vs runtimes) — 2026-07-03
+Exact `Rational` arithmetic is dominated by big-integer GCD/reduction cost, so the
+profile depends heavily on operand size; a small-operand round-trip completes fast and
+the relative noise is high — treat any ratio that completes in well under ~200 ms as
+order-of-magnitude. Numbers will be added here only once they are real, measured on a
+pinned host, and reproducible from the committed harness — nothing is estimated or
+cherry-picked.
+{{< /callout >}}
+
+## Library-level benchmark (Go API vs runtimes) — 2026-07-03 {#library-level-benchmark-go-api-vs-runtimes-2026-07-03}
 
 This section measures the **pure-Go library directly, through its Go API** — not
 the `rbgo` interpreter path described above. It isolates the library primitive
@@ -64,7 +72,7 @@ identical to MRI (canonical `Rational#to_s`) before any timing.
   earlier all-`*big.Rat` measurement (add 1.58×, mul 1.83×, div 1.77×,
   from-decimal 2.01×) is superseded; the before→after appears in the table below.
 
-#### add
+#### add {#add}
 
 | Runtime | ns/op | vs MRI |
 | --- | ---: | ---: |
@@ -74,7 +82,7 @@ identical to MRI (canonical `Rational#to_s`) before any timing.
 | JRuby | 207.1 | 2.01× |
 | TruffleRuby | 594.5 | 5.77× |
 
-#### mul
+#### mul {#mul}
 
 | Runtime | ns/op | vs MRI |
 | --- | ---: | ---: |
@@ -84,7 +92,7 @@ identical to MRI (canonical `Rational#to_s`) before any timing.
 | JRuby | 241.2 | 2.62× |
 | TruffleRuby | 331.1 | 3.60× |
 
-#### div
+#### div {#div}
 
 | Runtime | ns/op | vs MRI |
 | --- | ---: | ---: |
@@ -94,7 +102,7 @@ identical to MRI (canonical `Rational#to_s`) before any timing.
 | JRuby | 160.1 | 1.62× |
 | TruffleRuby | 324.0 | 3.27× |
 
-#### from-decimal
+#### from-decimal {#from-decimal}
 
 | Runtime | ns/op | vs MRI |
 | --- | ---: | ---: |
@@ -104,7 +112,7 @@ identical to MRI (canonical `Rational#to_s`) before any timing.
 | JRuby | 781.5 | 7.66× |
 | TruffleRuby | 3011.7 | 29.53× |
 
-#### to_s
+#### to_s {#to_s}
 
 | Runtime | ns/op | vs MRI |
 | --- | ---: | ---: |
@@ -114,7 +122,7 @@ identical to MRI (canonical `Rational#to_s`) before any timing.
 | JRuby | 241.4 | 2.41× |
 | TruffleRuby | 429.9 | 4.30× |
 
-#### reduce
+#### reduce {#reduce}
 
 | Runtime | ns/op | vs MRI |
 | --- | ---: | ---: |
@@ -124,7 +132,7 @@ identical to MRI (canonical `Rational#to_s`) before any timing.
 | JRuby | 553.9 | 2.04× |
 | TruffleRuby | 949.8 | 3.49× |
 
-#### cmp
+#### cmp {#cmp}
 
 | Runtime | ns/op | vs MRI |
 | --- | ---: | ---: |
@@ -166,24 +174,30 @@ visibly `from-decimal` (29.53×) and `cmp` (9.17×) — where Graal had not comp
 the loop within the warm-up budget; they are not steady-state figures. Every
 value is a real measured `ns/op` from the dated run above.
 
-!!! note "Reproduce"
-    The harness is committed under
-    [`benchmarks/`](https://github.com/go-ruby-rational/docs/tree/main/benchmarks):
-    a self-contained Go driver (`go/`, pins the published library by
-    pseudo-version via `go.mod` — resolved through the Go module proxy, no
-    `replace`), the equivalent `ruby/rational.rb` workload, and `run.sh`. Run
-    `bash benchmarks/run.sh`; env `OUTER`/`WARM` tune the pass budget and
-    `RUBY`/`JRUBY`/`TRUFFLERUBY` select the runtime binaries. `run.sh` verifies
-    the Go output is byte-identical to MRI (canonical `Rational#to_s`) and aborts
-    before timing on any mismatch.
+{{< callout type="info" >}}
+**Reproduce**
 
-!!! warning "Warm-up budget & noise — honest framing"
-    Numbers reflect a **fixed warm-process budget** (3 warm-up + 25 timed passes
-    in one process). The JVM/GraalVM JITs (JRuby, TruffleRuby) may need a larger
-    warm-up to reach steady state, so their columns can **understate** peak
-    throughput — most visibly TruffleRuby on the shortest loops (the cold-JIT
-    outliers noted above). Sub-microsecond rows carry the most relative noise;
-    treat those ratios as order-of-magnitude. Every number here is a **real
-    measured value** from the dated run above — nothing is fabricated, estimated,
-    or cherry-picked. The go-ruby column is the pure-Go library; every other
-    column is that interpreter's own core `Rational` doing the equivalent work.
+The harness is committed under
+[`benchmarks/`](https://github.com/go-ruby-rational/docs/tree/main/benchmarks):
+a self-contained Go driver (`go/`, pins the published library by
+pseudo-version via `go.mod` — resolved through the Go module proxy, no
+`replace`), the equivalent `ruby/rational.rb` workload, and `run.sh`. Run
+`bash benchmarks/run.sh`; env `OUTER`/`WARM` tune the pass budget and
+`RUBY`/`JRUBY`/`TRUFFLERUBY` select the runtime binaries. `run.sh` verifies
+the Go output is byte-identical to MRI (canonical `Rational#to_s`) and aborts
+before timing on any mismatch.
+{{< /callout >}}
+
+{{< callout type="warning" >}}
+**Warm-up budget & noise — honest framing**
+
+Numbers reflect a **fixed warm-process budget** (3 warm-up + 25 timed passes
+in one process). The JVM/GraalVM JITs (JRuby, TruffleRuby) may need a larger
+warm-up to reach steady state, so their columns can **understate** peak
+throughput — most visibly TruffleRuby on the shortest loops (the cold-JIT
+outliers noted above). Sub-microsecond rows carry the most relative noise;
+treat those ratios as order-of-magnitude. Every number here is a **real
+measured value** from the dated run above — nothing is fabricated, estimated,
+or cherry-picked. The go-ruby column is the pure-Go library; every other
+column is that interpreter's own core `Rational` doing the equivalent work.
+{{< /callout >}}

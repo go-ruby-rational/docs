@@ -1,4 +1,9 @@
-# Roadmap
+---
+title: "Roadmap"
+weight: 40
+---
+
+# Roadmap {#roadmap}
 
 `go-ruby-rational/rational` is grown **test-first**, each capability differential-tested
 against MRI rather than built in isolation. Ruby's `Rational` — the exact,
@@ -13,7 +18,7 @@ interpreter-independent number type — is **complete**.
 | Digit-aware rounding | `FloorN`/`CeilN`/`RoundN`/`TruncateN` return a Rational for `n >= 1` and an Integer for `n <= 0`, with half-away-from-zero rounding. | **Done** |
 | Comparison, Parse & oracle | `Cmp`/`Eql`/`EqlStrict` against Rational, Integer and Float (`NaN` → undefined like MRI's `nil`); `Parse` for `Rational(String)`; `Rationalize`. A wide corpus is inspected here and by the system `ruby`, compared byte-for-byte; 100% coverage, gofmt + go vet clean, green across all six 64-bit Go arches and three OSes. | **Done** |
 
-## Documented out-of-scope boundaries
+## Documented out-of-scope boundaries {#documented-out-of-scope-boundaries}
 
 These are **deliberate**, recorded so the module's surface is unambiguous:
 
@@ -30,5 +35,5 @@ These are **deliberate**, recorded so the module's surface is unambiguous:
 - **Reference is reference Ruby (MRI).** Byte-for-byte conformance targets MRI's
   behaviour, pinned by the differential oracle.
 
-See [Usage & API](api.md) for the surface and [Why pure Go](why.md) for the
+See [Usage & API]({{< relref "api.md" >}}) for the surface and [Why pure Go]({{< relref "why.md" >}}) for the
 deterministic / interpreter split.

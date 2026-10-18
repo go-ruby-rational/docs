@@ -1,20 +1,28 @@
-# Usage & API
+---
+title: "Usage & API"
+weight: 30
+---
+
+# Usage & API {#usage-api}
 
 The public API lives at the module root (`github.com/go-ruby-rational/rational`). It is
 **Ruby-shaped but Go-idiomatic**: the methods mirror Ruby's `Rational` (`+`, `to_s`,
 `inspect`, `round`, …), while the surface follows Go conventions — value types built on
 `math/big`, an explicit `error` where Ruby raises, no global state.
 
-!!! success "Status: implemented"
-    The library is built and importable as `github.com/go-ruby-rational/rational`, bound into `rbgo` as a native module; see [Roadmap](roadmap.md).
+{{< callout type="info" >}}
+**Status: implemented**
 
-## Install
+The library is built and importable as `github.com/go-ruby-rational/rational`, bound into `rbgo` as a native module; see [Roadmap]({{< relref "roadmap.md" >}}).
+{{< /callout >}}
+
+## Install {#install}
 
 ```sh
 go get github.com/go-ruby-rational/rational
 ```
 
-## Worked example
+## Worked example {#worked-example}
 
 ```go
 package main
@@ -48,7 +56,7 @@ func main() {
 }
 ```
 
-## Shape
+## Shape {#shape}
 
 ```go
 // Construction
@@ -104,7 +112,7 @@ var ErrZeroDivision    error // ZeroDivisionError ("divided by 0")
 var ErrInvalidArgument error // ArgumentError (unparseable Rational string)
 ```
 
-## MRI conformance
+## MRI conformance {#mri-conformance}
 
 Correctness is defined by reference Ruby. A **differential oracle** runs a wide corpus
 through both the system `ruby` and this library and compares the inspected results
@@ -113,7 +121,7 @@ through both the system `ruby` and this library and compares the inspected resul
 bytes; it skips itself where `ruby` is not on `PATH` (the qemu arch lanes), so the
 cross-arch builds still validate the library.
 
-## Notes on MRI fidelity
+## Notes on MRI fidelity {#notes-on-mri-fidelity}
 
 `Pow` with an **integer** exponent is computed exactly. For a **Rational or Float**
 exponent MRI returns a `Float` (`a.to_f ** exp`); `PowFloat` provides that fallback via
@@ -122,7 +130,7 @@ implementations, a perfect-root case (e.g. `8.0 ** (1.0/3.0)`) can differ in the
 across platforms — the oracle therefore exercises `Pow` (exact) and only the libm-stable
 `PowFloat` cases.
 
-## Relationship to Ruby
+## Relationship to Ruby {#relationship-to-ruby}
 
 `go-ruby-rational/rational` is **standalone and reusable**, and is the `Rational` backend
 bound into [go-embedded-ruby](https://github.com/go-embedded-ruby/ruby) by `rbgo` as a
