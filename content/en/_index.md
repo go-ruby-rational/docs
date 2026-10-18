@@ -1,4 +1,9 @@
-# go-ruby-rational documentation
+---
+title: "Home"
+weight: 10
+---
+
+# go-ruby-rational documentation {#go-ruby-rational-documentation}
 
 **Ruby's `Rational` exact number type in pure Go — MRI byte-exact, no cgo.**
 
@@ -18,10 +23,13 @@ Being **MRI-faithful**, it is deliberately distinct from
 [go-composites/rational](https://github.com/go-composites/rational), which models a generic
 mathematical rational rather than Ruby's exact semantics.
 
-!!! success "Status: exact number type complete — MRI byte-exact"
-    Faithful port of `Rational`: exact `Add`/`Sub`/`Mul`/`Div` (with `ErrZeroDivision`), `Neg`/`Abs`/`Reciprocal`, `Pow` (exact integer exponent) and `PowFloat` (Float fallback), normalisation, the `ToS`/`Inspect` split, conversions and digit-aware rounding (`FloorN`/`CeilN`/`RoundN`/`TruncateN`), comparison against Rational/Integer/Float, `Parse` and `Rationalize`. Validated by a **differential oracle** against the system `ruby` — inspected results compared byte-for-byte — at 100% coverage, `gofmt` + `go vet` clean, CI green across the six 64-bit Go targets and three OSes.
+{{< callout type="info" >}}
+**Status: exact number type complete — MRI byte-exact**
 
-## Why a separate, MRI-faithful type
+Faithful port of `Rational`: exact `Add`/`Sub`/`Mul`/`Div` (with `ErrZeroDivision`), `Neg`/`Abs`/`Reciprocal`, `Pow` (exact integer exponent) and `PowFloat` (Float fallback), normalisation, the `ToS`/`Inspect` split, conversions and digit-aware rounding (`FloorN`/`CeilN`/`RoundN`/`TruncateN`), comparison against Rational/Integer/Float, `Parse` and `Rationalize`. Validated by a **differential oracle** against the system `ruby` — inspected results compared byte-for-byte — at 100% coverage, `gofmt` + `go vet` clean, CI green across the six 64-bit Go targets and three OSes.
+{{< /callout >}}
+
+## Why a separate, MRI-faithful type {#why-a-separate-mri-faithful-type}
 
 The exact rational core (reduce to lowest terms, exact `+ - * /`, integer `**`) is the
 easy part; **matching MRI is in the details**:
@@ -35,7 +43,7 @@ easy part; **matching MRI is in the details**:
 
 This package encodes those rules and pins them with a differential MRI oracle.
 
-## Quick taste
+## Quick taste {#quick-taste}
 
 ```go
 a, _ := rational.New(big.NewInt(1), big.NewInt(3)) // (1/3)
@@ -48,7 +56,7 @@ r, _ := rational.Parse("10/4")  // Rational("10/4")
 fmt.Println(r.Inspect())        // (5/2)
 ```
 
-## Repositories
+## Repositories {#repositories}
 
 | Repo | What it is |
 | --- | --- |
@@ -57,7 +65,7 @@ fmt.Println(r.Inspect())        // (5/2)
 | [`go-ruby-rational.github.io`](https://github.com/go-ruby-rational/go-ruby-rational.github.io) | the organization landing page (Hugo) |
 | [`brand`](https://github.com/go-ruby-rational/brand) | logo and brand assets |
 
-## Principles
+## Principles {#principles}
 
 - **Pure Go, `CGO_ENABLED=0`** — trivial cross-compilation, a single static
   binary, no C toolchain.
@@ -70,11 +78,11 @@ fmt.Println(r.Inspect())        // (5/2)
 - **100% test coverage** is the target, enforced as a CI gate, across 6 arches
   and 3 OSes.
 
-## Where to go next
+## Where to go next {#where-to-go-next}
 
-- [Why pure Go](why.md) — why this exact number type is deterministic enough to
+- [Why pure Go]({{< relref "why.md" >}}) — why this exact number type is deterministic enough to
   live as a standalone, interpreter-independent Go library.
-- [Usage & API](api.md) — the public surface and worked examples.
-- [Roadmap](roadmap.md) — what is done and what is downstream by design.
+- [Usage & API]({{< relref "api.md" >}}) — the public surface and worked examples.
+- [Roadmap]({{< relref "roadmap.md" >}}) — what is done and what is downstream by design.
 
 Source lives at [github.com/go-ruby-rational/rational](https://github.com/go-ruby-rational/rational).
