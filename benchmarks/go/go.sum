@@ -2,3 +2,5 @@ github.com/go-ruby-rational/rational v0.0.0-20260703150906-60581472fec2 h1:3nvln
 github.com/go-ruby-rational/rational v0.0.0-20260703150906-60581472fec2/go.mod h1:HTFcXF2Hj8nMePdHTwKH+SFENxEXNDhrKaoMe290KnI=
 github.com/go-ruby-rational/rational v0.0.0-20260717073030-5199d6c61f15 h1:GlgliIwqiTzUHlwo3SXQr+5Q6UF0/u9ZPa9LLXhz4bc=
 github.com/go-ruby-rational/rational v0.0.0-20260717073030-5199d6c61f15/go.mod h1:HTFcXF2Hj8nMePdHTwKH+SFENxEXNDhrKaoMe290KnI=
+github.com/go-ruby-rational/rational v0.0.0-20261022100933-578e4557cd15 h1:b0EIlN4vh2YCjC3TIIGdDf/OG0hCXr1ZlGAt44+pLw0=
+github.com/go-ruby-rational/rational v0.0.0-20261022100933-578e4557cd15/go.mod h1:0AaM8KhFlGPminLhKuUY/gXJkHJvxWbsGFwr12dVx+M=
